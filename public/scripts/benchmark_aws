@@ -32,11 +32,11 @@ echo "=============================================================" >> $report
 
 
 
-#wget http://www.iozone.org/src/current/iozone3_434.tar
-#tar xvf iozone3_434.tar
-#cd iozone3_434/src/current
-#make linux
-#./iozone -a >> ./iozone.out
-#perl iozone_visualizer.pl iozone.out
-#mv report_iozone iozone
-#tar zcvf iozone.tgz iozone
+wget http://www.iozone.org/src/current/iozone3_434.tar
+tar xvf iozone3_434.tar
+cd iozone3_434/src/current
+make linux
+./iozone -a >> ./iozone.out
+perl iozone_visualizer.pl iozone.out
+mv report_iozone iozone
+tar zcvf iozone.tgz iozone
