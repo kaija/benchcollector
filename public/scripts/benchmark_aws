@@ -38,5 +38,4 @@ cd iozone3_434/src/current
 make linux
 ./iozone -a >> ./iozone.out
 perl iozone_visualizer.pl iozone.out
-mv report_iozone iozone
-tar zcvf iozone.tgz iozone
+tar zcvf report_iozone.tgz report_iozone
