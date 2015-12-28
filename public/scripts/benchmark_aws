@@ -52,6 +52,7 @@ cd iozone3_434/src/current
 make linux
 ./iozone -a >> ./iozone.out
 perl iozone_visualizer.pl iozone.out
+cp ./iozone.out report_iozone/
 tar zcvf report_iozone.tgz report_iozone
 
 
