@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+var fx = require('mkdir-recursive');
 var targz = require('tar.gz');
 var multipart = require('connect-multiparty');
 var path = require('path');
@@ -11,16 +12,33 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/iozone', multipartMiddleware, function(req, res, next) {
-  console.log(req.body);
-  console.log(req.files);
-  console.log(__dirname);
-  targz().extract(req.files.report.path, path.join(__dirname, '../public/' + req.body.cloud + '/' + req.body.instance + '/'), function(err){
+  targz().extract(req.files.report.path, path.join(__dirname, '../public/report/' + req.body.cloud + '/' + req.body.instance + '/iozone'), function(err){
     if(err) {
       console.log("error " + err);
     }else{
       console.log("done");
     }
     fs.unlink(req.files.report.path, function(err){});
+  });
+  res.send('OK');
+});
+
+router.post('/sysbench', multipartMiddleware, function(req, res, next) {
+  fx.mkdir(path.join(__dirname, '../public/report/' + req.body.cloud + '/' + req.body.instance + '/sysbench/'), function(err){
+    if(err) console.log(err);
+    fs.rename(req.files.report.path, path.join(__dirname, '../public/report/' + req.body.cloud + '/' + req.body.instance + '/sysbench/report.txt' ), function(err){
+      if(err) console.log(err);
+    });
+  });
+  res.send('OK');
+});
+
+router.post('/speedtest', multipartMiddleware, function(req, res, next) {
+  fx.mkdir(path.join(__dirname, '../public/report/' + req.body.cloud + '/' + req.body.instance + '/speedtest/'), function(err){
+    if(err) console.log(err);
+    fs.rename(req.files.report.path, path.join(__dirname, '../public/report/' + req.body.cloud + '/' + req.body.instance + '/speedtest/report.txt' ), function(err){
+      if(err) console.log(err);
+    });
   });
   res.send('OK');
 });

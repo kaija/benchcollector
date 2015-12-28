@@ -1,17 +1,21 @@
 #!/bin/sh
+
+url=$1
+instance_postfix=$2
+
 apt-get update
 it=`curl -s http://169.254.169.254/latest/meta-data/instance-type`
 az=`curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone`
 apt-get install -y build-essential sysbench gnuplot liblist-moreutils-perl libreadonly-perl
 
-report=/tmp/bench_result.log
-
+report=/tmp/sysbench_report.log
+speedtest_report=/tmp/speedtest.log
+echo "============================================================="
+echo "Test report of $it-$az"
+echo "============================================================="
+echo "Network Performance test" >> $speedtest_report
+wget -O - https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py | python >> $speedtest_report
 echo "=============================================================" > $report
-echo "Test report of $it-$az" >> $report
-echo "=============================================================" >> $report
-echo "Network Performance test" >> $report
-wget -O - https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py | python >> $report
-echo "=============================================================" >> $report
 echo "CPU test" >> $report
 ncpu=`nproc`
 sysbench --test=cpu --num-threads=${ncpu} run >> $report
@@ -39,3 +43,8 @@ make linux
 ./iozone -a >> ./iozone.out
 perl iozone_visualizer.pl iozone.out
 tar zcvf report_iozone.tgz report_iozone
+
+
+curl -XPOST http://$url/sysbench -F 'cloud=aws' -F "instance=${it}-${az}" -F 'report=@/tmp/sysbench_report.log'
+curl -XPOST http://$url/speedtest -F 'cloud=aws' -F "instance=${it}-${az}" -F 'report=@/tmp/speedtest.log'
+curl -XPOST http://$url/iozone -F 'cloud=aws' -F "instance=${it}-${az}" -F 'report=@report_iozone.tgz'
