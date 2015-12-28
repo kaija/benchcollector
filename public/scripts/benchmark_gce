@@ -14,8 +14,9 @@ then
 fi
 
 apt-get update
-it=`curl -s http://169.254.169.254/latest/meta-data/instance-type`
-az=`curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone`
+it=`curl -s -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/machine-type | awk -F '/' '{ print $4 }'`
+az=`curl -s -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/zone | awk -F '/' '{ print $4 }'`
+
 apt-get install -y build-essential sysbench gnuplot liblist-moreutils-perl libreadonly-perl
 
 report=/tmp/sysbench_report.log
