@@ -57,6 +57,6 @@ cp ./iozone.out report_iozone/
 tar zcvf report_iozone.tgz report_iozone
 
 
-curl -XPOST http://$url/sysbench -F 'cloud=aws' -F "instance=${it}-${az}" -F 'report=@/tmp/sysbench_report.log'
-curl -XPOST http://$url/speedtest -F 'cloud=aws' -F "instance=${it}-${az}" -F 'report=@/tmp/speedtest.log'
-curl -XPOST http://$url/iozone -F 'cloud=aws' -F "instance=${it}-${az}" -F 'report=@report_iozone.tgz'
+curl -XPOST http://$url/sysbench -F 'cloud=gce' -F "instance=${it}-${az}" -F 'report=@/tmp/sysbench_report.log'
+curl -XPOST http://$url/speedtest -F 'cloud=gce' -F "instance=${it}-${az}" -F 'report=@/tmp/speedtest.log'
+curl -XPOST http://$url/iozone -F 'cloud=gce' -F "instance=${it}-${az}" -F 'report=@report_iozone.tgz'
