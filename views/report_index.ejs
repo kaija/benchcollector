@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Instance benchmark result</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+<body>
+<p class="text-center">
+  <h2>AWS / GCE benchmark report</h2>
+</p>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Cloud</th>
+          <th>Instance</th>
+          <th>Speedtest</th>
+          <th>Sysbench</th>
+          <th>iozone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i=0; i < aws.length; i++) { %>
+        <tr>
+          <th scope="row">AWS</th>
+          <td><%= aws[i] %></td>
+          <td><a href="/report/aws/<%= aws[i] %>/speedtest/report.txt">link</a></td>
+          <td><a href="/report/aws/<%= aws[i] %>/sysbench/report.txt">link</a></td>
+          <td><a href="/report/aws/<%= aws[i] %>/iozone/report_iozone">link</a></td>
+        </tr>
+        <% } %>
+        <% for (var i=0; i <gce.length; i++) { %>
+        <tr>
+          <th scope="row">GCE</th>
+          <td><%= gce[i] %></td>
+          <td><a href="/report/gce/<%= gce[i] %>/speedtest/report.txt">link</a></td>
+          <td><a href="/report/gce/<%= gce[i] %>/sysbench/report.txt">link</a></td>
+          <td><a href="/report/gce/<%= gce[i] %>/iozone/report_iozone">link</a></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-2"></div>
+</div>
+
+</body>
+</html>
