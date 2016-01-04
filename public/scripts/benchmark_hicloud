@@ -1,0 +1,62 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]
+then
+  echo "No parameter assigned"
+fi
+
+url=$1
+instance_postfix=""
+
+if [ $# -eq 2 ]
+then
+  instance_postfix=$2
+fi
+
+apt-get update
+it=`curl -s -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/machine-type | awk -F '/' '{ print $4 }'`
+az=`curl -s -H "Metadata-Flavor: Google" http://169.254.169.254/computeMetadata/v1/instance/zone | awk -F '/' '{ print $4 }'`
+
+apt-get install -y build-essential sysbench gnuplot liblist-moreutils-perl libreadonly-perl
+
+report=/tmp/sysbench_report.log
+speedtest_report=/tmp/speedtest.log
+echo "============================================================="
+echo "Test report of $it-$az"
+echo "============================================================="
+echo "Network Performance test" >> $speedtest_report
+wget -O - https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py | python >> $speedtest_report
+echo "=============================================================" > $report
+echo "CPU test" >> $report
+ncpu=`nproc`
+sysbench --test=cpu --num-threads=${ncpu} run >> $report
+echo "=============================================================" >> $report
+echo "Memory test" >> $report
+sysbench --test=memory --num-threads=${ncpu} run >> $report
+echo "=============================================================" >> $report
+echo "FileIO prepare" >> $report
+sysbench --test=fileio --file-total-size=100G prepare >> $report
+for t in seqwr seqrewr seqrd rndrd rndwr rndrw
+do
+  echo "=============================================================" >> $report
+  echo "File IO $t" >> $report
+  sysbench --test=fileio --num-threads=${ncpu} --file-test-mode=$t run >> $report
+done
+echo "=============================================================" >> $report
+
+
+
+
+wget http://www.iozone.org/src/current/iozone3_434.tar
+tar xvf iozone3_434.tar
+cd iozone3_434/src/current
+make linux
+./iozone -a >> ./iozone.out
+perl iozone_visualizer.pl iozone.out
+cp ./iozone.out report_iozone/
+tar zcvf report_iozone.tgz report_iozone
+
+
+curl -XPOST http://$url/sysbench -F 'cloud=hicloud' -F "instance=${instance_postfix}" -F 'report=@/tmp/sysbench_report.log'
+curl -XPOST http://$url/speedtest -F 'cloud=hicloud' -F "instance=${instance_postfix}" -F 'report=@/tmp/speedtest.log'
+curl -XPOST http://$url/iozone -F 'cloud=hicloud' -F "instance=${instance_postfix}" -F 'report=@report_iozone.tgz'
