@@ -51,6 +51,15 @@
           <td><a href="/report/gce/<%= gce[i] %>/iozone/report_iozone">link</a></td>
         </tr>
         <% } %>
+        <% for (var i=0; i <hicloud.length; i++) { %>
+        <tr>
+          <th scope="row">Hicloud</th>
+          <td><%= hicloud[i] %></td>
+          <td><a href="/report/hicloud/<%= hicloud[i] %>/speedtest/report.txt">link</a></td>
+          <td><a href="/report/hicloud/<%= hicloud[i] %>/sysbench/report.txt">link</a></td>
+          <td><a href="/report/hicloud/<%= hicloud[i] %>/iozone/report_iozone">link</a></td>
+        </tr>
+        <% } %>
       </tbody>
     </table>
   </div>
